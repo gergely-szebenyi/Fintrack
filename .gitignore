@@ -1,0 +1,103 @@
+####################################
+# Gradle
+####################################
+.gradle/
+build/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+####################################
+# Kotlin / KMP
+####################################
+kotlin-js-store/
+kotlin-js-store/yarn.lock
+kotlin-js-store/package-lock.json
+
+####################################
+# IntelliJ IDEA / Android Studio
+####################################
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+####################################
+# Android
+####################################
+local.properties
+*.apk
+*.aab
+*.dex
+*.class
+captures/
+.externalNativeBuild/
+.cxx/
+
+####################################
+# iOS / Xcode
+####################################
+*.xcworkspace
+*.xcodeproj/project.xcworkspace
+DerivedData/
+Pods/
+Podfile.lock
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+####################################
+# macOS
+####################################
+.DS_Store
+
+####################################
+# Windows
+####################################
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+####################################
+# Linux
+####################################
+*~
+
+####################################
+# Logs
+####################################
+*.log
+
+####################################
+# Environment / Secrets
+####################################
+.env
+.env.*
+secrets.properties
+
+####################################
+# Node / JS (if using KMP JS)
+####################################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+
+####################################
+# Compose Multiplatform
+####################################
+composeApp/build/
+.skiko/
+
+####################################
+# Ktor / Server (if applicable)
+####################################
+application.conf.local
