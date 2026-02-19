@@ -12,6 +12,7 @@ build/
 kotlin-js-store/
 kotlin-js-store/yarn.lock
 kotlin-js-store/package-lock.json
+.kotlin/
 
 ####################################
 # IntelliJ IDEA / Android Studio
