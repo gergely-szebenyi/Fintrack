@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,7 @@ fun CategoryLegendRow(category: CategorySpend) {
             modifier = Modifier
                 .size(12.dp)
                 .clip(CircleShape)
-                .background(category.color)
+                .background(Color(category.colorToken))
         )
         Spacer(Modifier.width(10.dp))
         Text(

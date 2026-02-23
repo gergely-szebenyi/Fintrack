@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import com.prekogdevs.fintrack.domain.CategorySpend
@@ -25,7 +26,7 @@ fun DonutChart(
         categories.forEach { cat ->
             val sweepAngle = (cat.amount.toFloat() / total) * 360f
             drawArc(
-                color = cat.color,
+                color = Color(cat.colorToken),
                 startAngle = startAngle,
                 sweepAngle = sweepAngle - 2f, // gap between segments
                 useCenter = false,
