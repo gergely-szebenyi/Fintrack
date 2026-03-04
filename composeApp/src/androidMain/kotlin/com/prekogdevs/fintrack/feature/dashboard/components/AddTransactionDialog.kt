@@ -44,20 +44,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.prekogdevs.fintrack.core.theme.AppColors
+import com.prekogdevs.fintrack.domain.Category
+import com.prekogdevs.fintrack.domain.Transaction
+import com.prekogdevs.fintrack.domain.TransactionType
 
+private val transactionTypes = listOf("Expense", "Income")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTransactionDialog(onDismiss: () -> Unit) {
+fun AddTransactionDialog(
+    categories: List<Category>,
+    onDismiss: () -> Unit,
+    onAddTransaction: (Transaction) -> Unit
+) {
     var selectedType by remember { mutableStateOf("Expense") }
     var description by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("Food & Dining") }
+    var selectedCategory by remember(categories) { mutableStateOf(categories.first()) }
     var expanded by remember { mutableStateOf(false) }
-
-    val categories = listOf(
-        "Food & Dining", "Transport", "Shopping", "Coffee", "Health", "Income", "Other"
-    )
 
     Dialog(onDismissRequest = onDismiss) {
         Card(
@@ -98,7 +102,7 @@ fun AddTransactionDialog(onDismiss: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    listOf("Expense", "Income").forEach { type ->
+                    transactionTypes.forEach { type ->
                         val isSelected = selectedType == type
                         val bgColor by animateColorAsState(
                             targetValue = when {
@@ -137,7 +141,7 @@ fun AddTransactionDialog(onDismiss: () -> Unit) {
                     onExpandedChange = { expanded = !expanded }
                 ) {
                     OutlinedTextField(
-                        value = selectedCategory,
+                        value = selectedCategory.name,
                         onValueChange = {},
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
@@ -158,7 +162,7 @@ fun AddTransactionDialog(onDismiss: () -> Unit) {
                     ) {
                         categories.forEach { cat ->
                             DropdownMenuItem(
-                                text = { Text(cat) },
+                                text = { Text(cat.name) },
                                 onClick = {
                                     selectedCategory = cat
                                     expanded = false
@@ -211,7 +215,19 @@ fun AddTransactionDialog(onDismiss: () -> Unit) {
 
                 // Submit button
                 Button(
-                    onClick = onDismiss,
+                    onClick = {
+                        val parsedAmount = amount.toDoubleOrNull() ?: 0.0
+                        if (description.isNotBlank() && parsedAmount > 0) {
+                            onAddTransaction(Transaction(
+                                amount = parsedAmount,
+                                description = description,
+                                category = selectedCategory.name,
+                                type = if (selectedType == "Expense") TransactionType.EXPENSE else TransactionType.INCOME,
+                                date = "",
+                                currency = "USD"
+                            ))
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),

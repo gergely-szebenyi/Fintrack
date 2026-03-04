@@ -2,7 +2,7 @@ import SwiftUI
 import Shared
 
 struct SpendingByCategoryCard: View {
-    let categories: [CategorySpend]
+    let categories: [Shared.CategorySpend]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -15,8 +15,8 @@ struct SpendingByCategoryCard: View {
                 .frame(maxWidth: .infinity)
 
             VStack(spacing: 12) {
-                ForEach(categories) { cat in
-                    CategoryLegendRow(category: cat)
+                ForEach(categories) { spend in
+                    CategoryLegendRow(spend: spend)
                 }
             }
         }

@@ -3,8 +3,9 @@ import Shared
 
 struct TransactionItem: View {
     let transaction: Shared.Transaction
+    let icon: String
 
-    private var isIncome: Bool { transaction.amount > 0 }
+    private var isIncome: Bool { transaction.type == TransactionType.income }
 
     var body: some View {
         HStack(spacing: 14) {
@@ -12,12 +13,17 @@ struct TransactionItem: View {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(isIncome ? AppColors.greenIncome.opacity(0.12) : AppColors.bgGray)
                     .frame(width: 48, height: 48)
-                Text(transaction.icon)
-                    .font(.system(size: 22))
+                Text(icon.isEmpty
+                     ? String(transaction.category.prefix(1)).uppercased()
+                     : icon)
+                    .font(icon.isEmpty
+                          ? .system(size: 18, weight: .bold)
+                          : .system(size: 22))
+                    .foregroundColor(isIncome ? AppColors.greenIncome : AppColors.bluePrimary)
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(transaction.name)
+                Text(transaction.description_)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(AppColors.textPrimary)
                 Text(transaction.date)
@@ -29,7 +35,7 @@ struct TransactionItem: View {
 
             Text(isIncome
                  ? String(format: "+$%.2f", transaction.amount)
-                 : String(format: "-$%.2f", -transaction.amount))
+                 : String(format: "-$%.2f", transaction.amount))
                 .font(.system(size: 15, weight: .bold))
                 .foregroundColor(isIncome ? AppColors.greenIncome : AppColors.textPrimary)
         }

@@ -1,10 +1,11 @@
 package com.prekogdevs.fintrack.domain
 
 data class Transaction(
-    val id: String,
-    val name: String,
-    val date: String,
+    val id: String = "",
     val amount: Double,
+    val description: String,
     val category: String,
-    val icon: String
+    val type: TransactionType,
+    val date: String,
+    val currency: String
 )

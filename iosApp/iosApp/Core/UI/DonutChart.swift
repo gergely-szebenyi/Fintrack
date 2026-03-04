@@ -2,7 +2,7 @@ import SwiftUI
 import Shared
 
 struct DonutChart: View {
-    let categories: [CategorySpend]
+    let categories: [Shared.CategorySpend]
 
     var body: some View {
         Canvas { context, size in
@@ -12,23 +12,27 @@ struct DonutChart: View {
             let center = CGPoint(x: size.width / 2, y: size.height / 2)
             var startAngle = Angle.degrees(-90)
 
-            for cat in categories {
-                let fraction = cat.amount / total
-                let sweepAngle = Angle.degrees(fraction * 360 - 2) // 2° gap between segments
-                var path = Path()
-                path.addArc(
-                    center: center,
-                    radius: radius,
-                    startAngle: startAngle,
-                    endAngle: startAngle + sweepAngle,
-                    clockwise: false
-                )
-                context.stroke(
-                    path,
-                    with: .color(cat.color),
-                    style: StrokeStyle(lineWidth: strokeWidth, lineCap: .butt)
-                )
-                startAngle += Angle.degrees(fraction * 360)
+            for spend in categories {
+                let fraction = spend.amount / total
+                let fullSweep = fraction * 360
+                let drawSweep = fullSweep - 2
+
+                if drawSweep > 0 {
+                    var path = Path()
+                    path.addArc(
+                        center: center,
+                        radius: radius,
+                        startAngle: startAngle,
+                        endAngle: startAngle + Angle.degrees(drawSweep),
+                        clockwise: false
+                    )
+                    context.stroke(
+                        path,
+                        with: .color(spend.category.categoryColor),
+                        style: StrokeStyle(lineWidth: strokeWidth, lineCap: .butt)
+                    )
+                }
+                startAngle += Angle.degrees(fullSweep)
             }
         }
     }

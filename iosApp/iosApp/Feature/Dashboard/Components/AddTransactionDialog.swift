@@ -1,16 +1,28 @@
 import SwiftUI
+import Shared
 
 struct AddTransactionDialog: View {
+    let categories: [Shared.Category]
     let onDismiss: () -> Void
+    let onAddTransaction: (Shared.Transaction) -> Void
 
     @State private var selectedType = "Expense"
     @State private var description = ""
     @State private var amount = ""
-    @State private var selectedCategory = "Food & Dining"
+    @State private var selectedCategoryName: String
 
-    private let categories = [
-        "Food & Dining", "Transport", "Shopping", "Coffee", "Health", "Income", "Other"
-    ]
+    private static let transactionTypes = ["Expense", "Income"]
+
+    init(
+        categories: [Shared.Category],
+        onDismiss: @escaping () -> Void,
+        onAddTransaction: @escaping (Shared.Transaction) -> Void
+    ) {
+        self.categories = categories
+        self.onDismiss = onDismiss
+        self.onAddTransaction = onAddTransaction
+        _selectedCategoryName = State(initialValue: categories.first?.name ?? "")
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -37,7 +49,7 @@ struct AddTransactionDialog: View {
                     .foregroundColor(AppColors.textSecondary)
 
                 HStack(spacing: 10) {
-                    ForEach(["Expense", "Income"], id: \.self) { type in
+                    ForEach(Self.transactionTypes, id: \.self) { type in
                         let isSelected = selectedType == type
                         Button(action: { withAnimation(.easeInOut(duration: 0.2)) { selectedType = type } }) {
                             Text(type)
@@ -58,9 +70,9 @@ struct AddTransactionDialog: View {
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(AppColors.textSecondary)
 
-                Picker("Category", selection: $selectedCategory) {
-                    ForEach(categories, id: \.self) { cat in
-                        Text(cat).tag(cat)
+                Picker("Category", selection: $selectedCategoryName) {
+                    ForEach(categories) { cat in
+                        Text(cat.name).tag(cat.name)
                     }
                 }
                 .pickerStyle(.menu)
@@ -103,7 +115,20 @@ struct AddTransactionDialog: View {
             }
 
             // Submit button
-            Button(action: onDismiss) {
+            Button(action: {
+                if let parsedAmount = Double(amount), !description.isEmpty, parsedAmount > 0 {
+                    let type: TransactionType = selectedType == "Expense" ? .expense : .income
+                    onAddTransaction(Shared.Transaction(
+                        id: "",
+                        amount: parsedAmount,
+                        description: description,
+                        category: selectedCategoryName,
+                        type: type,
+                        date: "",
+                        currency: "USD"
+                    ))
+                }
+            }) {
                 Text("Add Transaction")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.white)

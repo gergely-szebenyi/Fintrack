@@ -23,11 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.prekogdevs.fintrack.core.theme.AppColors
 import com.prekogdevs.fintrack.domain.Transaction
+import com.prekogdevs.fintrack.domain.TransactionType
 
 
 @Composable
-fun TransactionItem(transaction: Transaction) {
-    val isIncome = transaction.amount > 0
+fun TransactionItem(transaction: Transaction, icon: String) {
+    val isIncome = transaction.type == TransactionType.INCOME
 
     Card(
         modifier = Modifier
@@ -41,7 +42,6 @@ fun TransactionItem(transaction: Transaction) {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icon box
             Box(
                 modifier = Modifier
                     .size(48.dp)
@@ -52,14 +52,19 @@ fun TransactionItem(transaction: Transaction) {
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(transaction.icon, fontSize = 22.sp)
+                Text(
+                    text = icon.ifEmpty { transaction.category.firstOrNull()?.uppercase() ?: "?" },
+                    fontSize = if (icon.isNotEmpty()) 22.sp else 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isIncome) AppColors.GreenIncome else AppColors.BluePrimary
+                )
             }
 
             Spacer(Modifier.width(14.dp))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = transaction.name,
+                    text = transaction.description,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = AppColors.TextPrimary
@@ -73,8 +78,7 @@ fun TransactionItem(transaction: Transaction) {
             }
 
             Text(
-                text = if (isIncome) "+$${"%.2f".format(transaction.amount)}"
-                else "-$${"%.2f".format(-transaction.amount)}",
+                text = (if (isIncome) "+$" else "-$") + "%.2f".format(transaction.amount),
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
                 color = if (isIncome) AppColors.GreenIncome else AppColors.TextPrimary

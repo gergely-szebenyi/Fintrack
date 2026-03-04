@@ -5,15 +5,19 @@ import Shared
 
 extension Shared.Transaction: @retroactive Identifiable {}
 
-extension CategorySpend: @retroactive Identifiable {
-    public var id: String { name }
+extension Shared.Category: @retroactive Identifiable {}
+
+extension Shared.CategorySpend: @retroactive Identifiable {
+    public var id: String { category.id }
 }
 
 // MARK: - Color resolution
 
-extension CategorySpend {
-    /// Resolves the Long color token (0xFFRRGGBB) to a SwiftUI Color.
-    var color: Color {
-        Color(hex: UInt32(Int(colorToken) & 0xFFFFFF))
+extension Shared.Category {
+    /// Parses the hex color string (e.g. "#3D6BF8") to a SwiftUI Color.
+    var categoryColor: Color {
+        let hex = color.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
+        guard let value = UInt32(hex, radix: 16) else { return .gray }
+        return Color(hex: value)
     }
 }

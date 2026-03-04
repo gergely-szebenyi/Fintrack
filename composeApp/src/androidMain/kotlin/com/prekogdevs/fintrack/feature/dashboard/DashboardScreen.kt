@@ -1,7 +1,7 @@
 package com.prekogdevs.fintrack.feature.dashboard
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,9 +29,10 @@ import com.prekogdevs.fintrack.feature.dashboard.components.TransactionItem
 
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = viewModel()
+    viewModel: AndroidDashboardViewModel = viewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    val categoryIconMap = state.availableCategories.associateBy({ it.name }, { it.icon })
 
     Box(
         modifier = Modifier
@@ -42,34 +43,43 @@ fun DashboardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(bottom = 100.dp) // extra padding so FAB doesn't cover content
+                .padding(bottom = 100.dp)
         ) {
             TopBar()
             BalanceCard(state.totalBalance, state.income, state.expenses)
             SpendingByCategoryCard(state.categories)
             RecentTransactionsHeader()
 
-            state.transactions.forEach {
-                TransactionItem(it)
+            state.transactions.forEach { transaction ->
+                TransactionItem(
+                    transaction = transaction,
+                    icon = categoryIconMap[transaction.category] ?: ""
+                )
             }
         }
 
-        FloatingActionButton(
-            onClick = { viewModel.onEvent(Event.AddClicked) },
-            containerColor = AppColors.BluePrimary,
-            contentColor = AppColors.BgGray,
+        Column(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(24.dp)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.End
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Add Transaction")
+            FloatingActionButton(
+                onClick = { viewModel.onAddClicked() },
+                containerColor = AppColors.BluePrimary,
+                contentColor = AppColors.BgGray
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add Transaction")
+            }
         }
 
-        // Dialog
         if (state.showAddDialog) {
-            AddTransactionDialog {
-                viewModel.onEvent(Event.DialogDismissed)
-            }
+            AddTransactionDialog(
+                categories = state.availableCategories,
+                onDismiss = { viewModel.onDialogDismissed() },
+                onAddTransaction = viewModel::onAddTransaction
+            )
         }
     }
 }

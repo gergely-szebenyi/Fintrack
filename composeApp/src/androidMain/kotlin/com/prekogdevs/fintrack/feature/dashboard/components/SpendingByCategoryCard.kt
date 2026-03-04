@@ -20,8 +20,6 @@ import com.prekogdevs.fintrack.core.theme.AppColors
 import com.prekogdevs.fintrack.core.ui.CategoryLegendRow
 import com.prekogdevs.fintrack.core.ui.DonutChart
 import com.prekogdevs.fintrack.domain.CategorySpend
-import kotlin.collections.forEach
-
 
 @Composable
 fun SpendingByCategoryCard(categories: List<CategorySpend>) {
@@ -51,9 +49,8 @@ fun SpendingByCategoryCard(categories: List<CategorySpend>) {
 
             Spacer(Modifier.height(20.dp))
 
-            // Legend
-            categories.forEach { cat ->
-                CategoryLegendRow(category = cat)
+            categories.forEach { spend ->
+                CategoryLegendRow(spend = spend)
                 Spacer(Modifier.height(12.dp))
             }
         }

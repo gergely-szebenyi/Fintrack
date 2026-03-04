@@ -18,12 +18,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.toColorInt
 import com.prekogdevs.fintrack.core.theme.AppColors
 import com.prekogdevs.fintrack.domain.CategorySpend
 
-
 @Composable
-fun CategoryLegendRow(category: CategorySpend) {
+fun CategoryLegendRow(spend: CategorySpend) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -32,24 +32,24 @@ fun CategoryLegendRow(category: CategorySpend) {
             modifier = Modifier
                 .size(12.dp)
                 .clip(CircleShape)
-                .background(Color(category.colorToken))
+                .background(Color(spend.category.color.toColorInt()))
         )
         Spacer(Modifier.width(10.dp))
         Text(
-            text = category.name,
+            text = spend.category.name,
             fontSize = 14.sp,
             color = AppColors.TextPrimary,
             modifier = Modifier.weight(1f)
         )
         Text(
-            text = "$${"%.2f".format(category.amount)}",
+            text = "${"%.2f".format(spend.amount)}",
             fontSize = 14.sp,
             fontWeight = FontWeight.SemiBold,
             color = AppColors.TextPrimary
         )
         Spacer(Modifier.width(12.dp))
         Text(
-            text = "${category.percentage.toInt()}%",
+            text = "${spend.percentage.toInt()}%",
             fontSize = 13.sp,
             color = AppColors.TextSecondary,
             modifier = Modifier.width(36.dp),
